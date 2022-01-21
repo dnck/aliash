@@ -6,7 +6,7 @@ Please include relevant motivation and context for the changes.
 
 ## How was the change tested? 
 
-[comment]: # (Optional)
+<!-- does this comment show ?  -->
 ## Side effects / Limitations / Possible Future Directions
 
 [comment]: # (Do not edit the lines below)
