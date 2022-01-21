@@ -1,18 +1,25 @@
+<!-- Required --> 
 # Summary
 Please provide a short description of the changes.
 
+<!-- Required -->
 ## Motivation
 Please include relevant motivation and context for the changes. 
+If the task originated from an external discussion or assingment, 
+please provde a link. For example, 
+- https://www.foo.com/thread/issue
 
+<!-- Required -->
 ## How was the change tested? 
+- `terraform plan`
 
-<!-- does this comment show ?  -->
-## Side effects / Limitations / Possible Future Directions
+<!-- Optional -->
+<!-- ## Side effects / Limitations / Possible Future Directions -->
 
-[comment]: # (Do not edit the lines below)
+<!-- Required: Do not edit the lines below --> 
 ## Review Checklist 
-### Code Author:
-- [ ] Code is understandable, maintainable and documented.
+### Code author (pre-assignment):
+- [ ] Code understandable and maintainable. Comes with proper documentation.
 - [ ] CI / Plan / Tests are successful.
 ### Code reviewer:
 - [ ] Code does what the author claims it does.
