@@ -12,10 +12,12 @@ from pathlib import Path
 
 from aliash_tool import aliash_tool
 
+DEFAULTS = {
+    "HOME_DIR": str(Path.home()),
+    "SCRIPT_DIR": os.path.join(str(Path.home()), "Utilities"),
+    "BASH_ALIASES_FILE": os.path.join(str(Path.home()), ".bash_aliases")
+}
 
-HOME_DIR = str(Path.home())
-SCRIPT_DIR = os.path.join(HOME_DIR, "Utilities")
-BASH_ALIASES_FILE = os.path.join(HOME_DIR, ".bash_aliases")
 
 
 class CommandLineApp():
@@ -23,20 +25,23 @@ class CommandLineApp():
 
     It uses the Click module instead of argparse.
     """
-    def __init__(self):
+    def __init__(self, home_dir, script_dir, bash_aliases_file):
         self.cli = aliash_tool.AliashTool(
-            home_dir=HOME_DIR, # home directory default ~/
-            script_dir=SCRIPT_DIR, # script directory default ~/Utilities
-            bash_aliases_file=BASH_ALIASES_FILE, # default ~/.bash_aliases
+            home_dir=home_dir, # home directory default ~/
+            script_dir=script_dir, # script directory default ~/Utilities
+            bash_aliases_file=bash_aliases_file, # default ~/.bash_aliases
         )
 
 @click.group()
+@click.option("--home-dir", default=DEFAULTS["HOME_DIR"], type=click.Path(exists=True))
+@click.option("--script-dir", default=DEFAULTS["SCRIPT_DIR"], type=click.Path(exists=True))
+@click.option("--bash-aliases-file", default=DEFAULTS["BASH_ALIASES_FILE"], type=click.Path(exists=True))
 @click.pass_context
-def cli(ctx):
+def cli(ctx, home_dir, script_dir, bash_aliases_file):
     """
     aliash_tool manages your .bash_aliases!
     """
-    ctx.obj = CommandLineApp()
+    ctx.obj = CommandLineApp(home_dir, script_dir, bash_aliases_file)
 
 
 @cli.command()
@@ -104,6 +109,14 @@ def help(ctx, alias):
     Display help for an [ALIAS] in .bash_aliases
     """
     assert ctx.obj.cli.help_alias(alias)
+
+@cli.command()
+@click.pass_context
+def show_all(ctx):
+    """
+    Basically just ls on the script_dir
+    """
+    ctx.obj.cli.show_all_aliases()
 
 if __name__ == "__main__":
     cli()

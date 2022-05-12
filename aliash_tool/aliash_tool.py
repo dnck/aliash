@@ -18,6 +18,17 @@ BASH_SCRIPT_HEADER = """#!/bin/bash
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 """
 
+class bcolors:
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKCYAN = '\033[96m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
+
 def read_file(filename):
     with open(filename, "r") as f:
         s = f.read()
@@ -32,6 +43,24 @@ def create_bash_script(filename):
         )
         f.write("{}".format(header))
     os.chmod(filename, 0o755)
+
+def col_print(lines, term_width=160, indent=0, pad=2):
+    lines.sort()
+    n_lines = len(lines)
+    if n_lines == 0:
+        return
+    col_width = max(len(line) for line in lines)
+    n_cols = int((term_width + pad - indent)/(col_width + pad))
+    n_cols = min(n_lines, max(1, n_cols))
+    col_len = int(n_lines/n_cols) + (0 if n_lines % n_cols == 0 else 1)
+    if (n_cols - 1) * col_len >= n_lines:
+        n_cols -= 1
+    cols = [lines[i*col_len : i*col_len + col_len] for i in range(n_cols)]
+    rows = list(zip(*cols))
+    rows_missed = zip(*[col[len(rows):] for col in cols[:-1]])
+    rows.extend(rows_missed)
+    for row in rows:
+        print(bcolors.OKGREEN + " "*indent + (" "*pad).join(line.ljust(col_width) for line in row))
 
 # Classes, methods, functions, and variables
 class AliashTool():
@@ -104,6 +133,7 @@ class AliashTool():
                     db[alias] = filename
                 else:
                     print("ERROR: duplicate alias")
+                    assert(False)
         return db
 
     def _format_alias_definition(self, alias) -> str:
@@ -184,7 +214,7 @@ class AliashTool():
         """
         if self._is_alias_in_script_dir(alias):
             print("ERROR: alias already exists with that name")
-            return True
+            return False
         else:
             self._append_bash_alias_file(alias)
             new_filename = self.join_script_dir(alias+".sh")
@@ -206,6 +236,39 @@ class AliashTool():
             print("SUCCESS: removed old alias from .bash_aliases")
         else:
             print("ERROR: alias does not exist with that name")
+            return False
+        return True
+
+    def show_alias_header(self, alias):
+        """Show the help str from an alias definition
+
+        Returns:
+            True
+
+        """
+        # only show help if the alias does exist
+        db = self._get_db()
+        if db.get(alias) is None:
+            print("ERROR: alias key {} not in db".format(alias))
+            return False
+        else:
+            try:
+                script = read_file(db.get(alias))
+                header_div="#%"
+                lines=[]
+                for line in script.split("\n"):
+                    if line.startswith(header_div) and line not in lines:
+                        lines.append(line)
+                        continue
+                    if line in lines:
+                        for help_line in lines:
+                            print(help_line)
+                        print(line)
+                        return True
+                    lines.append(line)
+            except:
+                print("ERROR: reading filename {}".format(db.get(alias)))
+                return False
         return True
 
     def help_alias(self, alias):
@@ -219,12 +282,15 @@ class AliashTool():
         db = self._get_db()
         if db.get(alias) is None:
             print("ERROR: alias key {} not in db".format(alias))
+            return False
         else:
             try:
                 script = read_file(db.get(alias))
-                print(script)
+                for line in script.split("\n"):
+                    print(line)
             except:
                 print("ERROR: reading filename {}".format(db.get(alias)))
+                return False
         return True
 
     def find_alias(self, tag) -> dict:
@@ -248,11 +314,12 @@ class AliashTool():
         """
         if not self._is_alias_in_script_dir(alias):
             print("ERROR: alias script does not exist with that name")
-            return True
+            return False
         # only show edit if the alias does exist
         db = self._get_db()
         if db.get(alias) is None:
             print("ERROR: alias key {} not in db".format(alias))
+            return False
         else:
             try:
                 filename = self.join_script_dir(alias+".sh")
@@ -266,6 +333,7 @@ class AliashTool():
                 os.chmod(filename, 0o755)
             except:
                 print("ERROR: writing filename {}".format(alias+".sh"))
+                return False
         return True
 
     def rename_alias(self, old_name, new_name):
@@ -277,13 +345,13 @@ class AliashTool():
         """
         if self._is_alias_in_script_dir(new_name):
             print("ERROR: alias already exists with that name in script dir")
-            return True
+            return False
         if not self._is_alias_in_script_dir(old_name):
             print("ERROR: alias does not exist with that name in script dir")
-            return True
+            return False
         if not self._is_alias_in_alias_definition_file(old_name):
             print("ERROR: alias does not exist with that name in alias file")
-            return True
+            return False
         self.add_alias(new_name)
         shutil.copy(
             self.join_script_dir(old_name+".sh"),
@@ -291,6 +359,9 @@ class AliashTool():
         )
         self.remove_alias(old_name)
         return True
+
+    def show_all_aliases(self):
+        col_print([i for i in os.listdir(self.script_dir) if i.endswith(".sh")])
 
     def test_aliash_tool(self):
         """Class methods are similar to regular functions.
