@@ -21,6 +21,5 @@ class MyTestClass(unittest.TestCase):
         """Test this function!"""
         self.assertEqual(self.aliash_tool.default_func(), True)
 
-
 if __name__ == "__main__":
     unittest.main()
