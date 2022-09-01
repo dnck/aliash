@@ -113,8 +113,10 @@ def find(ctx, tag: str):
     """
     found_aliases = ctx.obj.cli.find_alias(tag)
     if len(found_aliases):
+        pairs = []
         for k, v in found_aliases.items():  # pylint: disable=invalid-name
-            print(k, v)
+            pairs.append(f"{k}")
+        aliash_tool.col_print(pairs)
     else:
         print("no aliases found")
 
@@ -135,7 +137,8 @@ def show_all(ctx):
     """
     Basically just ls on the script_dir
     """
-    ctx.obj.cli.show_all_aliases()
+    all_alias_scripts = ctx.obj.cli.show_all_aliases()
+    aliash_tool.col_print(all_alias_scripts)
 
 
 
