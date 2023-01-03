@@ -17,6 +17,33 @@ BASH_SCRIPT_HEADER = """#!/bin/bash
 #     USAGE:{}
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 """
+BASH_SCRIPT_BODY='''
+COMMAND=""
+
+while [ "$#" -gt 0 ]; do
+  case "$1" in
+    --help) COMMAND="help"; shift 1;;
+  esac
+done
+
+function help_message() {
+  echo "ALIASH_NAME ALIASH_DOES_WHAT"
+  echo "USAGE:"
+  echo "  ALIASH_NAME [FLAGS]"
+  echo "FLAGS:"
+  echo "    --help            show help message"
+}
+
+function main() {
+  ALIASH_FUNCTION_BODY
+}
+
+if [ "$COMMAND" == "help" ]; then
+  help_message
+else
+  main
+fi
+'''
 
 
 BColors = namedtuple("fontcolor", "HEADER OKBLUE OKCYAN OKGREEN WARNING FAIL"+
@@ -45,6 +72,7 @@ def create_bash_script(filename):  # pylint: disable=missing-function-docstring
             "",#USAGE
         )
         fname.write(f"{header}".encode("UTF-8"))
+        fname.write(BASH_SCRIPT_BODY.encode("UTF-8"))
     os.chmod(filename, 0o755)
 
 def col_print(lines, term_width=160, indent=0, pad=2):  # pylint: disable=missing-function-docstring
