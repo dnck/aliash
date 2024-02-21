@@ -64,7 +64,7 @@ def read_file(filename):  # pylint: disable=missing-function-docstring
         contents = fname.read().decode("UTF-8")
     return contents
 
-def create_bash_script(filename):  # pylint: disable=missing-function-docstring
+def create_bash_script(filename: str, cli_parsing=False):  # pylint: disable=missing-function-docstring
     with open(filename, "wb") as fname:
         header = BASH_SCRIPT_HEADER.format(
             filename,
@@ -72,7 +72,8 @@ def create_bash_script(filename):  # pylint: disable=missing-function-docstring
             "",#USAGE
         )
         fname.write(f"{header}".encode("UTF-8"))
-        fname.write(BASH_SCRIPT_BODY.encode("UTF-8"))
+        if cli_parsing:
+            fname.write(BASH_SCRIPT_BODY.encode("UTF-8"))
     os.chmod(filename, 0o755)
 
 def col_print(lines, term_width=160, indent=0, pad=2):  # pylint: disable=missing-function-docstring
@@ -245,7 +246,7 @@ class AliashTool():
 
         self._append_bash_alias_file(alias)
         new_filename = self.join_script_dir(alias+".sh")
-        create_bash_script(new_filename)
+        create_bash_script(new_filename, cli_parsing=False)
         print("SUCCESS: added new alias file to script dir")
         return True
 
