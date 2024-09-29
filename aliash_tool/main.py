@@ -11,7 +11,7 @@ from pathlib import Path
 
 import click
 
-from aliash_tool import aliash_tool
+import aliash_tool
 
 
 defaults = {}
@@ -25,8 +25,8 @@ defaults["ALIASH_SCRIPTS_FILE"] = os.environ.get(
 )
 
 
-class CommandLineApp:  # pylint: disable=too-few-public-methods
-    """CommandLineApp is the default command line client for aliash_tool.
+class CommandLineInterface:  # pylint: disable=too-few-public-methods
+    """CommandLineInterface is the default command line client for aliash_tool.
 
     It uses the Click module instead of argparse.
     """
@@ -49,14 +49,14 @@ class CommandLineApp:  # pylint: disable=too-few-public-methods
     type=click.Path(exists=True),
 )
 @click.pass_context
-def cli(ctx, script_dir, bash_aliases_file):
+def CLI(ctx, script_dir, bash_aliases_file):
     """
     aliash_tool manages your .bash_aliases!
     """
-    ctx.obj = CommandLineApp(script_dir, bash_aliases_file)
+    ctx.obj = CommandLineInterface(script_dir, bash_aliases_file)
 
 
-@cli.command()
+@CLI.command()
 @click.pass_context
 def test(ctx):
     """
@@ -65,7 +65,7 @@ def test(ctx):
     assert ctx.obj.cli.test_aliash_tool()
 
 
-@cli.command()
+@CLI.command()
 @click.argument("alias")
 @click.pass_context
 def add(ctx, alias):
@@ -75,7 +75,7 @@ def add(ctx, alias):
     assert ctx.obj.cli.add_alias(alias)
 
 
-@cli.command()
+@CLI.command()
 @click.pass_context
 @click.argument("alias")
 def remove(ctx, alias):
@@ -85,7 +85,7 @@ def remove(ctx, alias):
     assert ctx.obj.cli.remove_alias(alias)
 
 
-@cli.command()
+@CLI.command()
 @click.pass_context
 @click.argument("alias")
 def edit(ctx, alias):
@@ -95,7 +95,7 @@ def edit(ctx, alias):
     assert ctx.obj.cli.edit_alias(alias)
 
 
-@cli.command()
+@CLI.command()
 @click.pass_context
 @click.argument("alias")
 @click.argument("new_name")
@@ -104,7 +104,7 @@ def rename(ctx, alias, new_name):
     assert ctx.obj.cli.rename_alias(alias, new_name)
 
 
-@cli.command()
+@CLI.command()
 @click.pass_context
 @click.argument("tag")
 def find(ctx, tag: str):
@@ -121,7 +121,7 @@ def find(ctx, tag: str):
         print("no aliases found")
 
 
-@cli.command()
+@CLI.command()
 @click.pass_context
 @click.argument("alias")
 def help(ctx, alias: str):  # pylint: disable=redefined-builtin
@@ -131,7 +131,7 @@ def help(ctx, alias: str):  # pylint: disable=redefined-builtin
     assert ctx.obj.cli.help_alias(alias)
 
 
-@cli.command()
+@CLI.command()
 @click.pass_context
 def show_all(ctx):
     """
@@ -144,4 +144,4 @@ def show_all(ctx):
 
 if __name__ == "__main__":
     # disable because cli gets input from user
-    cli()  # pylint: disable=no-value-for-parameter
+    CLI()  # pylint: disable=no-value-for-parameter
