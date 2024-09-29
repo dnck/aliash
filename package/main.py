@@ -11,7 +11,7 @@ from pathlib import Path
 
 import click
 
-from . import aliash_tool
+from . import aliash_tool as aliash
 
 
 defaults = {}
