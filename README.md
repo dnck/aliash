@@ -1,6 +1,6 @@
 # aliash
 
-`aliash` is a Python tool designed to manage and manipulate your .bash_aliases file, as well as handle the bash scripts referenced within it. This tool simplifies the process of managing bash scripts and their corresponding aliases, providing a straightforward interface for creating, editing, and organizing scripts.
+`aliash` is a Python tool designed to manage and manipulate your `.bash_aliases` file, as well as handle the bash scripts referenced within it. This tool simplifies the process of managing bash scripts and their corresponding aliases, providing a straightforward interface for creating, editing, and organizing scripts.
 
 ## Key Features
 
