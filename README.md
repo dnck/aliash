@@ -93,11 +93,14 @@ aliash --help
 After installing the project, add the following to your login profile (e.g., `.bashrc` or `.bash_profile`) to ensure `aliash` is available in all terminal sessions:
 
 ```bash
+
 # Define the directory where your bash scripts will be stored
 ALIASH_SCRIPTS_DIR="$HOME/Utilities"
+mkdir -p "$ALIASH_SCRIPTS_DIR/tmp" # for backups 
 
 # Define the path to your .bash_aliases file
 ALIASH_SCRIPTS_FILE="$HOME/.bash_aliases"
+touch "$ALIASH_SCRIPTS_FILE"
 
 # Set the path to your aliash virtual environment
 PATH_TO_ALIASH_VENV="$HOME/aliash/.aliash/"
