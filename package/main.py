@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-"""aliash_tool Description
+"""aliash Description
 
-This is the command line interface for aliash_tool. The structure of this program
+This is the command line interface for aliash. The structure of this program
 follows the structure of Click command line interface. You can read more about
 Click here, https://click.palletsprojects.com/en/7.x/
 """
@@ -11,7 +11,7 @@ from pathlib import Path
 
 import click
 
-import aliash_tool
+from . import aliash_tool
 
 
 defaults = {}
@@ -26,13 +26,13 @@ defaults["ALIASH_SCRIPTS_FILE"] = os.environ.get(
 
 
 class CommandLineInterface:  # pylint: disable=too-few-public-methods
-    """CommandLineInterface is the default command line client for aliash_tool.
+    """CommandLineInterface is the default command line client for aliash.
 
     It uses the Click module instead of argparse.
     """
 
     def __init__(self, script_dir: str, bash_aliases_file:str):
-        self.cli = aliash_tool.AliashTool(
+        self.cli = aliash.AliashTool(
             script_dir=script_dir,  # script directory default ~/Utilities
             bash_aliases_file=bash_aliases_file,  # default ~/.bash_aliases
         )
@@ -51,7 +51,7 @@ class CommandLineInterface:  # pylint: disable=too-few-public-methods
 @click.pass_context
 def CLI(ctx, script_dir, bash_aliases_file):
     """
-    aliash_tool manages your .bash_aliases!
+    aliash manages your .bash_aliases!
     """
     ctx.obj = CommandLineInterface(script_dir, bash_aliases_file)
 
@@ -60,9 +60,9 @@ def CLI(ctx, script_dir, bash_aliases_file):
 @click.pass_context
 def test(ctx):
     """
-    Test all methods of aliash_tool
+    Test all methods of aliash
     """
-    assert ctx.obj.cli.test_aliash_tool()
+    assert ctx.obj.cli.test_aliash()
 
 
 @CLI.command()
@@ -116,7 +116,7 @@ def find(ctx, tag: str):
         pairs = []
         for k, v in found_aliases.items():  # pylint: disable=invalid-name
             pairs.append(f"{k}")
-        aliash_tool.col_print(pairs)
+        aliash.col_print(pairs)
     else:
         print("no aliases found")
 
@@ -138,7 +138,7 @@ def show_all(ctx):
     Basically just ls on the script_dir
     """
     all_alias_scripts = ctx.obj.cli.show_all_aliases()
-    aliash_tool.col_print(all_alias_scripts)
+    aliash.col_print(all_alias_scripts)
 
 
 

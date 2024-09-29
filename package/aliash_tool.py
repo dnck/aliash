@@ -389,7 +389,7 @@ class AliashTool():
         """Shows all of the aliases script names"""
         return [i for i in os.listdir(self.script_dir) if i.endswith(".sh")]
 
-    def test_aliash_tool(self):
+    def test_aliash(self):
         """Class methods are similar to regular functions.
 
         Returns:
