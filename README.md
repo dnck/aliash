@@ -5,7 +5,7 @@
 ## Key Features
 
 - **Script Management**: Easily add, edit, rename, and remove scripts with automatic alias management.
-- **Alias Management**: Keeps your .bash_aliases file organized by linking each script to an alias.
+- **Alias Management**: Keeps your `.bash_aliases` file organized by linking each script to an alias.
 - **Configurable Paths**: Customize script and alias file locations through command-line options or environment variables.
 
 By default, `aliash` assumes:
